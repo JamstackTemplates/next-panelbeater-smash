@@ -1,0 +1,15 @@
+{
+  "name": "Second Wind Smash Repairs",
+  "description": "A primer-grey and ocean-metallic paint-booth theme for smash repairers: a signature before/after spray-pass slider, a repairs gallery filtered by damage type with paint-code chips, a step-by-step insurance-claims guide with a printable at-the-scene checklist, courtesy cars parked in painted bays with availability signs, workshop hours and a Jamstacks contact component for quote and claim enquiries.",
+  "tech": "next",
+  "type": "panelbeater",
+  "style": "smash",
+  "internal": false,
+  "components": ["support-form"],
+  "configFile": "site.config.json",
+  "screenshots": {
+    "light": "jamstacks/home-light.jpg",
+    "dark": "jamstacks/home-dark.jpg",
+    "theme": { "strategy": "media" }
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "templateId": "next-panelbeater-smash",
+  "viewport": {
+    "width": 1440,
+    "height": 900
+  },
+  "fullPage": false,
+  "captures": [
+    {
+      "mode": "light",
+      "sha256": "2314db2438fe8573eb2f74451795d4c47903857aff837af8f31bf2db8cb0bb11",
+      "file": "jamstacks/home-light.jpg",
+      "bytes": 152013
+    },
+    {
+      "mode": "dark",
+      "sha256": "3d212585787a8ddfaf8e18abc8d6938466483dbcbec5a130875ab11aea8f7c0c",
+      "file": "jamstacks/home-dark.jpg",
+      "bytes": 181831
+    }
+  ]
+}

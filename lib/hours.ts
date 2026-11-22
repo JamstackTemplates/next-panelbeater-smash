@@ -1,47 +1,75 @@
-/** Optional weekly opening-hours model. Time zone stays in site.config.json. */
 export const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'] as const;
 export type Day = typeof DAYS[number];
+
 export interface OpeningHours {
-  /** Every weekday occurs exactly once. */
   day: Day;
-  /** Inclusive local HH:MM; omit both times for a closed day. */
-  opens?: string;
-  /** Exclusive local HH:MM; overnight intervals are deliberately unsupported. */
-  closes?: string;
+  /** Inclusive local HH:MM. Omit closed days from the list. */
+  opens: string;
+  /** Exclusive local HH:MM. Same-day intervals only. */
+  closes: string;
+  note?: string;
 }
+
+export interface Closures {
+  from: string;
+  through: string;
+  dates: readonly string[];
+}
+
 const clock = /^([01]\d|2[0-3]):[0-5]\d$/;
 const minutes = (value: string) => Number(value.slice(0, 2)) * 60 + Number(value.slice(3));
+
 export function validateHours(hours: readonly OpeningHours[]): void {
-  for (const day of DAYS) {
-    const matches = hours.filter(entry => entry.day === day);
-    if (matches.length !== 1) throw new Error(`hours: ${day} must occur exactly once`);
-    const { opens, closes } = matches[0];
-    if (opens === undefined && closes === undefined) continue;
-    if (!opens || !closes || !clock.test(opens) || !clock.test(closes) || minutes(opens) >= minutes(closes)) {
-      throw new Error(`hours: ${day} needs HH:MM opening before closing; overnight service is unsupported`);
+  const seen = new Set<Day>();
+  for (const { day, opens, closes, note } of hours) {
+    if (!DAYS.includes(day)) throw new Error(`hours[${day}].day: unknown weekday`);
+    if (seen.has(day)) throw new Error(`hours[${day}].day: duplicate weekday`);
+    seen.add(day);
+    if (typeof opens !== 'string' || typeof closes !== 'string' || !clock.test(opens) || !clock.test(closes) || minutes(opens) >= minutes(closes)) {
+      throw new Error(`hours[${day}]: needs HH:MM opening before closing; overnight service is unsupported`);
     }
+    if (note !== undefined && (typeof note !== 'string' || !note.trim())) throw new Error(`hours[${day}].note: expected non-empty text`);
   }
-  if (hours.length !== 7) throw new Error('hours: expected seven weekdays');
 }
-/** Browser callers supply the clock; build/static views never compute current availability. */
-export function openingLabel(hours: readonly OpeningHours[], timeZone: string, now = new Date()): string {
-  const fallback = 'See opening hours';
-  if (!timeZone) return fallback;
-  validateHours(hours);
+
+export function displayTime(value: string) {
+  const [hour, minute] = value.split(':').map(Number);
+  return `${hour % 12 || 12}:${String(minute).padStart(2, '0')} ${hour < 12 ? 'am' : 'pm'}`;
+}
+
+export const neutralHours = 'Workshop hours';
+
+/** Advance local calendar dates in UTC after extracting the workshop's local time. */
+export function openingLabel(hours: readonly OpeningHours[], timeZone: string, now = new Date(), closures?: Closures): string {
+  if (!timeZone) return neutralHours;
   let parts: Intl.DateTimeFormatPart[];
   try {
-    parts = new Intl.DateTimeFormat('en-US', { timeZone, weekday: 'long', hour: 'numeric', minute: 'numeric', hourCycle: 'h23' }).formatToParts(now);
-  } catch { return fallback; }
+    parts = new Intl.DateTimeFormat('en-AU', {
+      timeZone, weekday: 'long', year: 'numeric', month: '2-digit', day: '2-digit',
+      hour: 'numeric', minute: 'numeric', hourCycle: 'h23',
+    }).formatToParts(now);
+  } catch { return neutralHours; }
   const part = (type: string) => parts.find(entry => entry.type === type)?.value ?? '';
-  const index = DAYS.indexOf(part('weekday') as Day);
-  if (index < 0) return fallback;
+  const weekday = DAYS.indexOf(part('weekday') as Day);
   const current = Number(part('hour')) * 60 + Number(part('minute'));
-  const today = hours.find(entry => entry.day === DAYS[index])!;
-  if (today.opens && today.closes && current >= minutes(today.opens) && current < minutes(today.closes)) return `Open now · until ${today.closes}`;
+  const date = new Date(`${part('year')}-${part('month')}-${part('day')}T00:00:00Z`);
   for (let offset = 0; offset <= 7; offset++) {
-    const day = DAYS[(index + offset) % 7];
-    const entry = hours.find(value => value.day === day)!;
-    if (entry.opens && (offset > 0 || current < minutes(entry.opens))) return `Closed · opens ${offset === 0 ? 'today' : day} at ${entry.opens}`;
+    const day = DAYS[(weekday + offset) % 7];
+    const key = date.toISOString().slice(0, 10);
+    date.setUTCDate(date.getUTCDate() + 1);
+    if (closures && (key < closures.from || key > closures.through)) return offset === 0 ? neutralHours : 'Closed';
+    if (closures?.dates.includes(key)) {
+      if (offset === 0) return 'Closed';
+      continue;
+    }
+    const entry = hours.find(value => value.day === day);
+    if (!entry) {
+      if (offset === 0) return 'Closed';
+      continue;
+    }
+    const note = entry.note ? ` (${entry.note})` : '';
+    if (offset === 0 && current >= minutes(entry.opens) && current < minutes(entry.closes)) return `Open now, until ${displayTime(entry.closes)}${note}`;
+    if (offset > 0 || current < minutes(entry.opens)) return `Opens ${offset === 0 ? 'today' : day} at ${displayTime(entry.opens)}${note}`;
   }
-  return 'Closed · see opening hours';
+  return 'Closed';
 }

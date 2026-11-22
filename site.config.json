@@ -1,7 +1,8 @@
 {
-  "name": "Jamstacks starter",
-  "description": "A neutral Next.js foundation for Jamstacks websites.",
-  "domain": "",
+  "name": "Second Wind Smash Repairs",
+  "description": "Second Wind Smash Repairs in Woolloongabba, Brisbane: collision, dent, hail and paint repairs, help with your insurance claim, and courtesy cars while yours is with us. Free repair quotes.",
+  "domain": "next-panelbeater-smash.jamstacks.net",
+  "timeZone": "Australia/Brisbane",
   "jamstacks": {
     "siteId": "",
     "cdnUrl": "https://cdn.jamstacks.net"

@@ -1,166 +1,91 @@
-# JamstackTemplates Next.js starter
+# Second Wind Smash Repairs
 
-The shared starter for Next.js templates in the `JamstackTemplates` organization. Its canonical home is
-`JamstackTemplates/template-next`, alongside the templates generated from it.
-It is not a gallery design or a published demo. Business content is sample content. No application code
-in a website created from this template depends on the starter checkout or the portal repository.
+A static Next.js website for a fictitious panelbeater and spray painter in Woolloongabba, Brisbane. The Jamstacks gallery template ID is `next-panelbeater-smash`.
 
-## Build your website
+## Develop and preview
 
-Start in the checkout of the repository GitHub created from `JamstackTemplates/template-next`. All
-starter files are already present. Local development requires Node 24 or later and npm.
-
-To build a new site, fill in `plan/PLAN.md`, then tell the coding agent **`Implement plan/PLAN.md`**.
-In Claude Code, `/write-plan <business description>` drafts the brief for you. For a gallery template,
-pass the table row: `/write-plan next-type-style | Business | Description | Form purpose`.
-After reviewing the finished site, run `/cleanup-plan` or delete `plan/` and `.claude/skills/` by hand
-to remove all initial build instructions.
-
-To preview locally, run `npm ci` and `npm run dev` from the repository root.
-
-## Pages
-
-| Route | Purpose |
-| --- | --- |
-| `/` | Minimal content-driven home page and Organization JSON-LD |
-| `/contact/` | Hosted support form when configured; visible email alternative |
-| `/404.html` | Friendly static error page |
-
-## Make it yours
-
-| File | Owns |
-| --- | --- |
-| `content/business.ts` | Shared business name, contact details and starter sample copy |
-| `app/page.tsx`, `app/<route>/page.tsx` | Page composition and editable copy such as headings and calls to action |
-| `content/menu.ts` or `content/services.ts` (add when needed) | Industry-specific typed collections |
-| `site.config.json` | Public name, description, hostname, optional timeZone and Jamstacks integration |
-| `app/tailwind.input.css` | Theme tokens, utility mappings and small shared styles |
-| `components/site-header.tsx`, `site-footer.tsx` | Replaceable navigation and visual shell |
-| `lib/structured-data.ts` | Schema type/properties derived from real content |
-| `app/sitemap.ts` | Public routes; update when adding a page |
-
-Edit page copy in the route file, for example `<Hero.Heading>Seasonal flowers</Hero.Heading>`
-in `app/page.tsx` for the Home page. The backing
-component owns the styling and interactions. Use typed fields for data the site needs to look up or
-reuse. For example, change `business.email` to update Contact. Rename in `business.name` and
-`site.config.json.name`. Add a typed core-content file for frequent owner edits: a food menu should use
-the existing sections/items/price/availability model; changes such as sold out, seasonal or a new section
-should be data edits with actionable content tests. Do not add business content to configuration: the
-Jamstacks provisioner replaces that file wholesale, possibly adding `provisioningId`.
-
-## Appearance and optional local-business features
-
-The starter uses system fonts, neutral Tailwind v4 tokens and the published `jamstacks` package's
-ThemeProvider, ThemeScript and DarkModeToggle. No font download or font licence file is needed for
-system fonts. Each designed template chooses and documents self-hosted font packages and their licences.
-Utilities live in components; colours originate in CSS tokens with light, automatic-dark and explicit-dark
-values plus `@theme inline` mappings. Keep the hosted form's primary fill dark enough for white text.
-Keyboard focus, reduced motion and print styles are included. The footer credit is yours to keep,
-reword or remove.
-
-For a business with visiting hours, add address/directions/hours to typed content, set the IANA `timeZone`
-in site.config.json and use optional `GoogleMap`, `TimeZoneNote` and `OpenBadge` components. GoogleMap
-accepts an address and descriptive title; map helpers need no key. `OpenBadge` accepts seven
-`OpeningHours` records, uses the business zone and refreshes each minute in the browser; static/no-JS
-output is neutral. Same-day intervals only: overnight hours fail validation and need a tested extension
-before use. The baseline home page does not load a map or assert opening hours.
-
-## Public configuration
-
-```json
-{
-  "name": "Business name",
-  "description": "Public description",
-  "domain": "next-business-minimal.jamstacks.net",
-  "timeZone": "America/New_York",
-  "jamstacks": { "siteId": "", "cdnUrl": "https://cdn.jamstacks.net" }
-}
-```
-
-The starter itself leaves domain/timeZone unset. Gallery templates use their folder name plus
-`.jamstacks.net`; customers replace the demo domain with their own. Do not invent canonical URLs when
-the deployed address is unknown.
-
-| Environment variable | Public build-time meaning |
-| --- | --- |
-| `JAMSTACKS_SITE` | Website ID; blank retains file default, absent ID gives email fallback |
-| `NEXT_PUBLIC_JAMSTACKS_CDN_URL` | CDN asset base; default `https://cdn.jamstacks.net` |
-| `NEXT_PUBLIC_SITE_DOMAIN` | Hostname overriding config domain |
-| `SITE_TIME_ZONE` | IANA zone overriding config timeZone |
-| `PAGES_BASE_PATH` | Project path such as `/preview`; blank for custom domain/root |
-| `PAGES_BASE_URL` | Actual Pages origin and path; takes precedence for canonical URLs |
-| `JAMSTACKS_ALLOW_LOCAL_CDN` | Explicit localhost-only testing opt-in; disallowed in Actions |
-
-Copy .env.example to .env.local for Next.js local work. All listed values are public. Never add tokens,
-SMTP credentials or publishing keys. Newer dependencies should stay within reviewed majors; update
-package.json and package-lock.json together, then run the full checks.
-
-## Contact contract
-
-The real `<jamstacks-support-form>` host and one `{cdn}/sites/{siteId}/embed.js` bootstrap appear only
-on Contact when configured. Without a site ID there is no embed host/request. Email remains visible
-in either case. The hosted runtime owns name/email/message fields, validation, submission and results.
-Never register the element locally, substitute a form or intercept submission. Contact navigation uses
-full document loads via SiteLink because the runtime has no remount API. Copy must describe an enquiry,
-not a confirmed booking/order/payment; no attachments or extra input fields.
-
-For local Jamstacks development, configure an explicit local CDN URL and
-`JAMSTACKS_ALLOW_LOCAL_CDN=1`; remote builds reject localhost. A locally loaded component does not prove
-real message delivery. Test delivery separately against a configured site/backend.
-
-## Checks and preview
+Use Node.js 24 or later.
 
 ```sh
+npm ci
+npm run dev
 npm run check
+npm start
+```
+
+`npm run check` runs the tests, typecheck and production export. `npm start` serves the static files from `out/`.
+
+| Route | Content |
+| --- | --- |
+| `/` | Paint booth, featured repair, price sheet, claim steps, fleet and workshop details |
+| `/repairs/` | Filterable before-and-after job sheets and repair standard |
+| `/claims/` | At-the-scene checklist, claim steps and questions. Print the checklist and steps from this page. |
+| `/courtesy-cars/` | Fleet, availability, loan terms and enquiry link |
+| `/contact/` | Quote, claim and loan enquiries, with a visible email and phone |
+| `/404.html` | Static missing-page artwork and recovery links |
+
+## Edit the site
+
+Edit headings, introductions, calls to action and page-specific copy in `app/page.tsx` and the other route files under `app/`. Edit navigation and the wordmark in `components/site-header.tsx`, and footer copy in `components/site-footer.tsx`.
+
+| File | Editable data |
+| --- | --- |
+| `content/business.ts` | Name, tagline, email, phone, address, directions, approximate map coordinates and weekly hours. Use `HH:MM` local times with the opening time before the closing time. Omit closed days. Update `timeZone` here and in `site.config.json` if the location changes. |
+| `content/closures.ts` | Full-day Queensland public holidays and Brisbane’s show holiday. Dates use local `YYYY-MM-DD`. The published calendar covers 2026–2029. Extend the date list and `through` together when new dates are published. Outside the calendar’s range the site displays “Workshop hours.” |
+| `content/services.ts` | Price sheet rows. `priceFrom` is whole AUD, with `0` for free and `null` for assessment. `typicalDays` is the working-day range. `insuranceWork` identifies work eligible for insurance. Choose an icon from `serviceIcons`. |
+| `content/repairs.ts` | Gallery jobs. Give each job a stable lowercase hyphenated `id` that becomes its page anchor, plus a supported `body`, `damage` and `zone`, panel names, working days, claim flag, story and paint code, name and six-digit hex. Set `featured: true` on exactly one job for Home. |
+| `content/courtesy-cars.ts` | Fleet details, including body, 2–8 seats, automatic or manual transmission, petrol or hybrid fuel, tow bar, six-digit paint hex, availability and note. |
+| `site.config.json` | Public name, meta description, domain, time zone and Jamstacks configuration. Update the name here and in `content/business.ts` when renaming. The provisioner may add `provisioningId`. |
+| `app/tailwind.input.css`, `components/workshop-art.tsx` | Day and night palettes, panel and tape treatments, fonts and SVG artwork |
+| `lib/metadata.ts`, `lib/structured-data.ts`, `app/sitemap.ts` | Social metadata, content-driven `AutoBodyShop` data and indexed routes |
+
+The content checks name the collection item and field to fix. Queensland holiday dates come from the [Queensland Government public holidays calendar](https://www.qld.gov.au/recreation/travel/holidays/public).
+
+### Change a courtesy car’s availability
+
+Find `id: 'brisa'` in `content/courtesy-cars.ts` and change `available: true` to `available: false`. After rebuilding, Home reads “2 of 5 cars in the bay this week” and Brisa’s sign reads “Out on loan” on both Home and Courtesy cars. Change the flag back to put Brisa back in the bay. A car request is an enquiry, and the workshop holds a car once it confirms by reply.
+
+### Add a repair job
+
+Copy an object in `content/repairs.ts` and give it a unique ID. Use a generic vehicle description, select the body and damage zone for the illustration, and fill in the panel, paint and job details. The gallery and filter counts update automatically. Change the featured flags together when replacing the Home job.
+
+## Contact and public configuration
+
+Set `jamstacks.siteId` in `site.config.json` or supply `JAMSTACKS_SITE` at build time. When configured, Contact loads one hosted Jamstacks support form and its bootstrap. The hosted runtime owns the name, email and message fields, validation and submission. With an empty site ID, Contact uses email. The public email remains visible either way. SiteLink uses full-document navigation into and out of Contact so each visit gets a fresh bootstrap.
+
+| Environment variable | Public build-time use |
+| --- | --- |
+| `JAMSTACKS_SITE` | Site ID. A blank value uses the file default. |
+| `NEXT_PUBLIC_JAMSTACKS_CDN_URL` | CDN asset base, normally `https://cdn.jamstacks.net` |
+| `NEXT_PUBLIC_SITE_DOMAIN` | Hostname overriding the configured domain |
+| `SITE_TIME_ZONE` | IANA time zone overriding the configured time zone |
+| `PAGES_BASE_PATH` | GitHub Pages project path such as `/preview` |
+| `PAGES_BASE_URL` | Actual Pages origin and path, used for canonical URLs |
+| `JAMSTACKS_ALLOW_LOCAL_CDN` | Local-only opt-in for a localhost CDN. GitHub Actions rejects it. |
+
+Copy `.env.example` to `.env.local` for local values. These settings are public. Keep credentials in deployment secrets.
+
+To verify navigation and URLs with a project path, build and preview the export with these settings. Repeat with a public test site ID to exercise the hosted form bootstrap. Checking the component in preview and confirming real message delivery are separate tests.
+
+```sh
 PAGES_BASE_PATH=/preview PAGES_BASE_URL=https://owner.github.io/preview npm run build
 npm start -- --base /preview --port 3000
 ```
 
-Tests cover config/provisioner compatibility, embed state, content rules, optional opening hours,
-and structured-data escaping. Typecheck uses Next's generated route types.
-When changing the Contact integration, base paths or canonical URLs, check the exported HTML and
-sitemap. Verify both configured and unconfigured Contact with the corresponding build settings.
-Test light/dark at desktop and mobile widths, keyboard navigation, unknown routes, repeated Contact
-navigation and any added browser interactions. Return to a normal build before capturing final assets.
+## Pages and gallery publishing
 
-## GitHub Pages deployment
+The GitHub Actions workflow builds pull requests and publishes main or manual runs when Pages is configured to use GitHub Actions. It preserves the Jamstacks `provisioning_id` dispatch input and correlated run name. Set the site’s custom domain and HTTPS in Pages. If the repository has a `PAGES_ADMIN_TOKEN` secret with Administration and Pages write access, the workflow can set the custom domain and enforce HTTPS once the certificate is issued. The domain comes from the `SITE_DOMAIN` variable, the config, or the JamstackTemplates repository name. Manage DNS separately.
 
-`.github/workflows/pages.yml` uses npm ci, tests, typecheck and static export. It preserves Jamstacks'
-`provisioning_id` dispatch input
-and correlated run name. It builds pull requests without deploying, and publishes main/manual runs.
-Configure Pages to use GitHub Actions. GitHub ignores a CNAME file for Actions deployments, so do not
-add public/CNAME; the custom domain is a repository setting. The workflow sets it before building
-when a `PAGES_ADMIN_TOKEN` secret is available (a fine-grained token with Administration and Pages
-write access to the repository, e.g. as an organisation secret). The domain is the `SITE_DOMAIN`
-variable, else site.config.json's `domain`, else `<repo-name>.jamstacks.net` for JamstackTemplates
-repositories. Once the domain is set and its certificate is issued, a later deploy also enforces HTTPS.
-Without the secret the step only prints a notice; set the custom domain and HTTPS in Settings → Pages.
-DNS is managed separately; for template demos the CNAME targets `jamstacktemplates.github.io`.
+The finished site self-hosts Archivo (full width and weight axes), Atkinson Hyperlegible Next and Azeret Mono through Fontsource. The npm packages include their OFL 1.1 licences. The app icon lives in `app/icon.svg` and the 1200×630 social image in `public/og.png`.
 
-## Content Security Policy
-
-A host-level CSP must permit same-origin Next.js scripts/assets, the inline theme bootstrap (using an
-appropriate hash/nonce policy), the configured Jamstacks CDN scripts/assets and the published form's
-API connection origin. Derive actual directives from the deployed component. Optional maps require
-`frame-src https://www.google.com`. Apply CSP at the host; static export cannot set response headers
-through a running Next.js server. Do not put private credentials into CSP or relax policies blindly.
-
-## Publishing assets and structure
-
-`app/`, `components/`, `content/`, `lib/` and `types/` are the website. `scripts/` includes static
-preview and verification, `tests/` covers customer behavior, and `.github/` supplies deployment.
-`jamstacks/` is removable gallery-only source metadata. Ordinary builds, tests and Pages work after
-it is deleted. To publish a gallery template, create [its manifest](jamstacks/README.md) and capture
-genuine screenshots before running its separate publishing test:
+`jamstacks/` is removable gallery metadata and captures. Ordinary builds, tests and Pages work without it. After a fresh normal build, run the gallery capture script from the portal checkout and validate its report.
 
 ```sh
-node /home/mythz/src/mythz/jamstacks.net/tools/template-screenshots/capture.mjs \
-  --template /path/to/next-type-style --modes light,dark --executable /usr/bin/chromium
+node /path/to/jamstacks.net/tools/template-screenshots/capture.mjs \
+  --template . --modes light,dark --executable /usr/bin/chromium
 node --test jamstacks/config.test.mjs
 ```
 
-Before publication: replace neutral content and shell; validate industry data/schema and all links;
-choose licensed fonts; verify both themes/base-path/embed states; create a neutral 1200×630 public/og.png
-from the finished design and wire metadata; replace the icon; generate gallery captures and validate;
-confirm domain/Pages settings and HTTPS; remove `plan/` and `.claude/skills/` after review. The website must not import or
-link the planning folder. No stock screenshot or OG image is supplied as if it were final.
+After reviewing the site, remove `plan/` and `.claude/skills/` before publishing the gallery template.
+
+For a host-level content security policy, allow same-origin Next.js assets, the inline theme bootstrap, assets from the configured Jamstacks CDN and the published form’s API origin. The optional workshop map uses `frame-src https://www.google.com`.

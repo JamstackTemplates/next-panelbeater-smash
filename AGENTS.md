@@ -28,6 +28,14 @@ site.config.json. Keep the provisioner's config shape: name, description, domain
 jamstacks.siteId/cdnUrl and optional provisioningId. Business data never goes there. Reuse the design's
 illustrations and palette rather than adding unrelated assets.
 
+## Second Wind content ownership
+
+The five route files under `app/` own page copy and composition. `content/business.ts` owns the
+shared workshop details and weekly hours. `content/closures.ts` owns dated public holiday exceptions.
+The price sheet is in `content/services.ts`, the gallery and featured job are in
+`content/repairs.ts`, and the fleet is in `content/courtesy-cars.ts`. Change a fleet car’s
+`available` flag to update its sign and the Home count. See README.md for field meanings.
+
 ## Styling: Tailwind CSS v4
 
 Use utilities in components. `app/tailwind.input.css` owns tokens, theme mappings, base styles, small
